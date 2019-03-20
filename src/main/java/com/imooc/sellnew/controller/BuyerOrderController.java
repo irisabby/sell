@@ -6,6 +6,7 @@ import com.imooc.sellnew.dto.OrderDTO;
 import com.imooc.sellnew.enums.ResultEnum;
 import com.imooc.sellnew.exception.SellException;
 import com.imooc.sellnew.form.OrderForm;
+import com.imooc.sellnew.service.BuyerService;
 import com.imooc.sellnew.service.OrderService;
 import com.imooc.sellnew.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class BuyerOrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private BuyerService buyerService;
 /*
     在后端控制层controller里面，可以使用注解 @Valid 进行表单验证，同时，BindingResult类的对象用来获得表单验证的结果。
 */
@@ -78,8 +82,7 @@ public class BuyerOrderController {
    @GetMapping("/detail")
     public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
                                      @RequestParam("orderId") String orderId){
-        //TODO 不安全的做法，改进
-            OrderDTO orderDTO= orderService.findOne(orderId);
+            OrderDTO orderDTO= buyerService.findOrderOne(openid,orderId);
             return ResultVOUtil.success(orderDTO);
    }
 
@@ -89,9 +92,7 @@ public class BuyerOrderController {
     public ResultVO cancel(@RequestParam("openid") String openid,
                            @RequestParam("orderId") String orderId){
 
-        //TODO 不安全的做法，改进
-        OrderDTO orderDTO=orderService.findOne(orderId);
-        orderService.cancel(orderDTO);
+        buyerService.cancelOrder(openid,orderId);
         return ResultVOUtil.success();
     }
 }
